@@ -1,0 +1,10 @@
+streamlit
+pandas
+plotly
+bcrypt
+python-dotenv
+openpyxl
+psycopg2-binary
+sqlalchemy
+numpy
+streamlit-aggrid
