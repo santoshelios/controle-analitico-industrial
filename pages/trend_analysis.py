@@ -35,38 +35,20 @@ def show_trend_analysis():
 
         SELECT
 
-            c.data_coleta,
-            c.hora_coleta,
-            c.ponto,
-            c.operador,
+            data_coleta,
+            hora_coleta,
+            ponto,
+            operador,
+            status,
+            resultados,
+            planta,
+            setor
 
-            p.nome AS parametro,
-
-            cr.valor,
-
-            CASE
-                WHEN cr.conforme = TRUE
-                THEN 'Conforme'
-                ELSE 'Crítico'
-            END AS status,
-
-            c.planta,
-            c.setor,
-
-            p.limite_min,
-            p.limite_max
-
-        FROM collection_results cr
-
-        INNER JOIN collections c
-            ON c.id = cr.collection_id
-
-        INNER JOIN parameters p
-            ON p.id = cr.parameter_id
+        FROM collections
 
         ORDER BY
-            c.data_coleta ASC,
-            c.hora_coleta ASC
+            data_coleta ASC,
+            hora_coleta ASC
 
         """
 
@@ -84,30 +66,80 @@ def show_trend_analysis():
 
     for row in rows:
 
-        dados.append({
+        data = str(row[0])
 
-            "Data": str(row[0]),
+        hora = str(row[1])
 
-            "Hora": str(row[1]),
+        ponto = row[2]
 
-            "Ponto": row[2],
+        operador = row[3]
 
-            "Operador": row[3],
+        status = row[4]
 
-            "Parâmetro": row[4],
+        resultados = row[5]
 
-            "Valor": float(row[5]),
+        planta = row[6]
 
-            "Status": row[6],
+        setor = row[7]
 
-            "Planta": row[7],
+        if resultados:
 
-            "Setor": row[8],
+            for parametro, info in resultados.items():
 
-            "Limite Min": row[9],
+                try:
 
-            "Limite Max": row[10]
-        })
+                    valor = float(
+                        info["valor"]
+                    )
+
+                except:
+
+                    valor = None
+
+                try:
+
+                    limite_min = float(
+                        info["limite_min"]
+                    )
+
+                except:
+
+                    limite_min = None
+
+                try:
+
+                    limite_max = float(
+                        info["limite_max"]
+                    )
+
+                except:
+
+                    limite_max = None
+
+                dados.append({
+
+                    "Data": data,
+
+                    "Hora": hora,
+
+                    "Ponto": ponto,
+
+                    "Operador": operador,
+
+                    "Status": status,
+
+                    "Planta": planta,
+
+                    "Setor": setor,
+
+                    "Parâmetro": parametro,
+
+                    "Valor": valor,
+
+                    "Limite Min": limite_min,
+
+                    "Limite Max": limite_max
+                })
 
     df = pd.DataFrame(dados)
 
@@ -224,41 +256,6 @@ def show_trend_analysis():
     df = df.sort_values(
         "Timestamp"
     )
-
-    # =====================================================
-    # FILTRO PERÍODO ANALÍTICO
-    # =====================================================
-
-    periodo = st.session_state.get(
-        "periodo_analitico",
-        "Hoje"
-    )
-
-    agora = pd.Timestamp.now()
-
-    if periodo == "Hoje":
-
-        inicio = agora.normalize()
-
-        df = df[
-            df["Timestamp"] >= inicio
-        ]
-
-    elif periodo == "7 Dias":
-
-        inicio = agora - pd.Timedelta(days=7)
-
-        df = df[
-            df["Timestamp"] >= inicio
-        ]
-
-    elif periodo == "30 Dias":
-
-        inicio = agora - pd.Timedelta(days=30)
-
-        df = df[
-            df["Timestamp"] >= inicio
-        ]
 
     # =====================================================
     # CHART
