@@ -43,9 +43,10 @@ def show_trend_analysis():
             planta,
             setor
 
-        FROM collections
+        FROM collection_results
 
-        ORDER BY data_coleta ASC
+        ORDER BY data_coleta ASC,
+                 hora_coleta ASC
 
         """
 
