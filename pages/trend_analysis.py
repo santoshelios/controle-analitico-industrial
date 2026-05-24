@@ -204,9 +204,27 @@ def show_trend_analysis():
         df["Parâmetro"].dropna().unique().tolist()
     )
 
+    st.markdown(
+
+    """
+    <div style='
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    '>
+
+    Variáveis Analíticas
+
+    </div>
+    """,
+
+    unsafe_allow_html=True
+)
+
     parametros_selecionados = st.multiselect(
 
-        "Variáveis Analíticas",
+        "",
 
         parametros,
 
