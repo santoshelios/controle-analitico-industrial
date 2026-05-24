@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-import json
 
 from db_connection import get_safe_connection
 
@@ -14,9 +13,11 @@ def show_trend_analysis():
 
     st.title("📈 Trend Analysis")
 
-    st.markdown("""
-    Análise temporal multivariável industrial.
-    """)
+    st.markdown(
+        """
+        Análise temporal multivariável industrial.
+        """
+    )
 
     st.divider()
 
@@ -34,19 +35,38 @@ def show_trend_analysis():
 
         SELECT
 
-            data_coleta,
-            hora_coleta,
-            ponto,
-            operador,
-            status,
-            resultados,
-            planta,
-            setor
+            c.data_coleta,
+            c.hora_coleta,
+            c.ponto,
+            c.operador,
 
-        FROM collection_results
+            p.nome AS parametro,
 
-        ORDER BY data_coleta ASC,
-                 hora_coleta ASC
+            cr.valor,
+
+            CASE
+                WHEN cr.conforme = TRUE
+                THEN 'Conforme'
+                ELSE 'Crítico'
+            END AS status,
+
+            c.planta,
+            c.setor,
+
+            p.limite_min,
+            p.limite_max
+
+        FROM collection_results cr
+
+        INNER JOIN collections c
+            ON c.id = cr.collection_id
+
+        INNER JOIN parameters p
+            ON p.id = cr.parameter_id
+
+        ORDER BY
+            c.data_coleta ASC,
+            c.hora_coleta ASC
 
         """
 
@@ -64,54 +84,30 @@ def show_trend_analysis():
 
     for row in rows:
 
-        data = str(row[0])
+        dados.append({
 
-        hora = str(row[1])
+            "Data": str(row[0]),
 
-        ponto = row[2]
+            "Hora": str(row[1]),
 
-        operador = row[3]
+            "Ponto": row[2],
 
-        status = row[4]
+            "Operador": row[3],
 
-        resultados = row[5]
+            "Parâmetro": row[4],
 
-        planta = row[6]
+            "Valor": float(row[5]),
 
-        setor = row[7]
+            "Status": row[6],
 
-        if resultados:
+            "Planta": row[7],
 
-            for parametro, info in resultados.items():
+            "Setor": row[8],
 
-                try:
+            "Limite Min": row[9],
 
-                    valor = float(info["valor"])
-
-                except:
-
-                    valor = None
-
-                dados.append({
-
-                    "Data": data,
-
-                    "Hora": hora,
-
-                    "Ponto": ponto,
-
-                    "Operador": operador,
-
-                    "Status": status,
-
-                    "Planta": planta,
-
-                    "Setor": setor,
-
-                    "Parâmetro": parametro,
-
-                    "Valor": valor
-                })
+            "Limite Max": row[10]
+        })
 
     df = pd.DataFrame(dados)
 
@@ -142,9 +138,7 @@ def show_trend_analysis():
         )
 
         filtro_planta = st.selectbox(
-
             "Planta",
-
             plantas
         )
 
@@ -155,9 +149,7 @@ def show_trend_analysis():
         )
 
         filtro_setor = st.selectbox(
-
             "Setor",
-
             setores
         )
 
@@ -168,14 +160,12 @@ def show_trend_analysis():
         )
 
         filtro_ponto = st.selectbox(
-
             "Ponto",
-
             pontos
         )
 
     # =====================================================
-    # MULTI VARIÁVEL
+    # VARIÁVEIS ANALÍTICAS
     # =====================================================
 
     parametros = sorted(
@@ -231,16 +221,16 @@ def show_trend_analysis():
 
     )
 
-    df = df.sort_values("Timestamp")
+    df = df.sort_values(
+        "Timestamp"
+    )
 
-       # =====================================================
-    # FILTRO DE PERÍODO ANALÍTICO
+    # =====================================================
+    # FILTRO PERÍODO ANALÍTICO
     # =====================================================
 
     periodo = st.session_state.get(
-
         "periodo_analitico",
-
         "Hoje"
     )
 
@@ -270,7 +260,7 @@ def show_trend_analysis():
             df["Timestamp"] >= inicio
         ]
 
-      # =====================================================
+    # =====================================================
     # CHART
     # =====================================================
 
@@ -288,13 +278,17 @@ def show_trend_analysis():
         "#06B6D4"
     ]
 
+    multiplas_variaveis = (
+        len(parametros_selecionados) > 1
+    )
+
     # =====================================================
-    # MULTI AXIS
+    # PLOTS
     # =====================================================
 
-    multiplas_variaveis = len(parametros_selecionados) > 1
-
-    for idx, parametro in enumerate(parametros_selecionados):
+    for idx, parametro in enumerate(
+        parametros_selecionados
+    ):
 
         df_param = df[
             df["Parâmetro"] == parametro
@@ -344,13 +338,12 @@ def show_trend_analysis():
                 ),
 
                 marker=dict(
-
                     size=8
                 )
             )
         )
 
-       # =====================================================
+    # =====================================================
     # LIMITES OPERACIONAIS
     # =====================================================
 
@@ -358,48 +351,27 @@ def show_trend_analysis():
 
         parametro_unico = parametros_selecionados[0]
 
-        limite_min = None
-        limite_max = None
+        df_limite = df[
+            df["Parâmetro"] == parametro_unico
+        ]
 
-        for row in rows:
+        limite_min = df_limite[
+            "Limite Min"
+        ].dropna()
 
-            resultados = row[5]
+        limite_max = df_limite[
+            "Limite Max"
+        ].dropna()
 
-            if resultados and parametro_unico in resultados:
-
-                try:
-
-                    limite_min = float(
-
-                        resultados[parametro_unico]["limite_min"]
-
-                    )
-
-                    limite_max = float(
-
-                        resultados[parametro_unico]["limite_max"]
-
-                    )
-
-                    break
-
-                except:
-
-                    pass
-
-        # ============================================
-        # LIMITE INFERIOR
-        # ============================================
-
-        if limite_min is not None:
+        if not limite_min.empty:
 
             fig.add_hline(
 
-                y=limite_min,
+                y=float(limite_min.iloc[0]),
 
                 line_dash="dash",
 
-                line_width=3,
+                line_width=2,
 
                 line_color="#FBBF24",
 
@@ -408,19 +380,15 @@ def show_trend_analysis():
                 annotation_position="bottom right"
             )
 
-        # ============================================
-        # LIMITE SUPERIOR
-        # ============================================
-
-        if limite_max is not None:
+        if not limite_max.empty:
 
             fig.add_hline(
 
-                y=limite_max,
+                y=float(limite_max.iloc[0]),
 
                 line_dash="dash",
 
-                line_width=3,
+                line_width=2,
 
                 line_color="#FF4D6D",
 
@@ -512,7 +480,7 @@ def show_trend_analysis():
     )
 
     # =====================================================
-    # MÚLTIPLOS EIXOS
+    # MULTI Y AXIS
     # =====================================================
 
     if multiplas_variaveis:
@@ -539,24 +507,27 @@ def show_trend_analysis():
                 color=cores[(idx-1) % len(cores)],
 
                 position=min(
-
                     0.98,
-
                     1 - ((idx-2) * 0.05)
                 )
             )
 
     fig.update_layout(
-
         **layout_config
     )
+
+    # =====================================================
+    # RENDER
+    # =====================================================
 
     st.plotly_chart(
 
         fig,
 
         use_container_width=True,
+
         key="trend_analysis_chart",
+
         config={
 
             "displaylogo": False,
@@ -572,5 +543,3 @@ def show_trend_analysis():
             ]
         }
     )
-
-    
