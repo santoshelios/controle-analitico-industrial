@@ -371,37 +371,63 @@ FORM BUTTONS
 }
 
 /* =========================================================
-METRICS / KPI
+METRICS / KPI - ISA FINAL
 ========================================================= */
 
 div[data-testid="metric-container"] {
+
+    position:
+        relative;
+
+    overflow:
+        hidden;
 
     background:
         #252526 !important;
 
     border:
-        1px solid #3A3A3A;
+        1px solid #3A3A3A !important;
 
     border-radius:
-        12px;
+        10px !important;
 
     padding:
-        22px;
+        20px !important;
 
     box-shadow:
-        none;
+        none !important;
 
     transition:
         all 0.2s ease;
 }
 
-div[data-testid="metric-container"]:hover {
+/* REMOVE HERANÇA ANTIGA */
 
-    border:
-        1px solid #5A5A5A;
+div[data-testid="metric-container"]::before,
+div[data-testid="metric-container"]::after {
+
+    display:
+        none !important;
+
+    content:
+        none !important;
 }
 
-/* METRIC LABEL */
+/* HOVER */
+
+div[data-testid="metric-container"]:hover {
+
+    background:
+        #2D2D30 !important;
+
+    border:
+        1px solid #5A5A5A !important;
+
+    transform:
+        translateY(-2px);
+}
+
+/* LABEL */
 
 div[data-testid="metric-container"] label {
 
@@ -413,6 +439,9 @@ div[data-testid="metric-container"] label {
 
     font-weight:
         700 !important;
+
+    letter-spacing:
+        0.3px;
 }
 
 /* VALUE */
@@ -423,13 +452,13 @@ div[data-testid="stMetricValue"] {
         #F2F2F2 !important;
 
     font-size:
-        38px !important;
+        36px !important;
 
     font-weight:
         800 !important;
 
     text-shadow:
-        none;
+        none !important;
 }
 
 /* DELTA */
