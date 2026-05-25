@@ -232,122 +232,138 @@ def show_dashboard():
 
 
 
-    # =====================================================
-    # KPI STYLE
-    # =====================================================
+# =====================================================
+# KPI STYLE - ISA INDUSTRIAL
+# =====================================================
 
-    st.markdown("""
+st.markdown("""
 
-    <style>
+<style>
 
-    .custom-kpi {
+.custom-kpi {
 
-        background:
-            linear-gradient(
-                135deg,
-                rgba(37,99,235,0.92),
-                rgba(15,23,42,0.96)
-            );
+    background:
+        #252526;
 
-        border:
-            1px solid rgba(96,165,250,0.35);
+    border:
+        1px solid #3A3A3A;
 
-        border-radius: 22px;
+    border-radius:
+        12px;
 
-        padding: 24px;
+    padding:
+        24px;
 
-        min-height: 180px;
+    min-height:
+        180px;
 
-        box-shadow:
-            0 18px 50px rgba(37,99,235,0.25);
+    box-shadow:
+        none;
 
-        position: relative;
+    position:
+        relative;
 
-        overflow: hidden;
+    overflow:
+        hidden;
 
-        transition:
-            all 0.25s ease;
-    }
+    transition:
+        all 0.2s ease;
+}
 
-    .custom-kpi:hover {
+/* REMOVE GLOW */
 
-        transform:
-            translateY(-4px);
+.custom-kpi::before {
 
-        box-shadow:
-            0 24px 60px rgba(59,130,246,0.40);
-    }
+    display:
+        none;
+}
 
-    .custom-kpi::before {
+/* HOVER */
 
-        content: "";
+.custom-kpi:hover {
 
-        position: absolute;
+    background:
+        #2D2D30;
 
-        top: 0;
-        left: 0;
+    border:
+        1px solid #5A5A5A;
 
-        width: 100%;
-        height: 5px;
+    transform:
+        translateY(-2px);
+}
 
-        background:
-            linear-gradient(
-                90deg,
-                rgba(59,130,246,0),
-                rgba(255,255,255,1),
-                rgba(59,130,246,0)
-            );
-    }
+/* KPI TITLE */
 
-    # .custom-kpi-title {
+.custom-kpi h4 {
 
-    #     margin: 0;
+    margin:
+        0;
 
-    #     font-size: 15px;
+    margin-bottom:
+        26px;
 
-    #     font-weight: 800;
+    font-size:
+        13px;
 
-    #     color: rgba(255,255,255,0.98);
+    font-weight:
+        700;
 
-    #     text-transform: uppercase;
+    color:
+        #A0A0A0;
 
-    #     margin-bottom: 24px;
+    text-transform:
+        uppercase;
 
-    #     letter-spacing: 0.5px;
-    # }
+    letter-spacing:
+        0.6px;
+}
 
-    # .custom-kpi-value {
+/* KPI VALUE */
 
-    #     margin: 0;
+.custom-kpi h1 {
 
-    #     font-size: 54px;
+    margin:
+        0;
 
-    #     font-weight: 900;
+    margin-bottom:
+        18px;
 
-    #     color: white;
+    font-size:
+        52px;
 
-    #     line-height: 1;
+    font-weight:
+        800;
 
-    #     margin-bottom: 18px;
+    color:
+        #F2F2F2;
 
-    #     text-shadow:
-    #         0 0 28px rgba(255,255,255,0.25);
-    # }
+    line-height:
+        1;
 
-    # .custom-kpi-desc {
+    text-shadow:
+        none;
+}
 
-    #     margin: 0;
+/* KPI DESCRIPTION */
 
-    #     font-size: 14px;
+.custom-kpi p {
 
-    #     color: rgba(255,255,255,0.86);
+    margin:
+        0;
 
-    #     line-height: 1.5;
-    # }
+    font-size:
+        13px;
 
-    # </style>
+    color:
+        #BFBFBF;
 
-    # """, unsafe_allow_html=True)
+    line-height:
+        1.5;
+}
+
+</style>
+
+""", unsafe_allow_html=True)
 
     # =====================================================
     # INDICADORES
