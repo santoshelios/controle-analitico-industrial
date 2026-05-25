@@ -82,27 +82,90 @@ html, body, [class*="css"] {
 
 /* BOTÕES */
 
-.stButton > button {
+/* =========================================================
+BOTÕES SIDEBAR FIXOS
+========================================================= */
 
-    width: 100%;
-    height: 50px;
+[data-testid="stSidebar"] .stButton {
 
-    border-radius: 10px;
+    display:
+        flex;
 
-    border: 1px solid #3A3A3A;
-
-    background: #2D2D30 !important;
-
-    color: #D9D9D9 !important;
-
-    font-weight: 600;
-
-    transition: all 0.2s ease;
-
-    box-shadow: none;
+    justify-content:
+        center;
 }
 
-.stButton > button:hover {
+[data-testid="stSidebar"] .stButton > button {
+
+    width:
+        260px !important;
+
+    min-width:
+        260px !important;
+
+    max-width:
+        260px !important;
+
+    height:
+        54px;
+
+    margin-bottom:
+        10px;
+
+    border-radius:
+        10px;
+
+    border:
+        1px solid #3A3A3A;
+
+    background:
+        #2D2D30 !important;
+
+    color:
+        #D9D9D9 !important;
+
+    font-weight:
+        600;
+
+    font-size:
+        14px;
+
+    text-align:
+        left;
+
+    padding-left:
+        18px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        flex-start;
+
+    transition:
+        all 0.2s ease;
+
+    box-shadow:
+        none;
+}
+
+[data-testid="stSidebar"] .stButton > button:hover {
+
+    background:
+        #3A3A3A !important;
+
+    border:
+        1px solid #5A5A5A;
+
+    color:
+        white !important;
+
+    transform:
+        translateX(4px);
+}
 
     background: #3A3A3A !important;
 
