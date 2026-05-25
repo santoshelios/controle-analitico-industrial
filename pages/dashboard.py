@@ -236,132 +236,132 @@ def show_dashboard():
 # KPI STYLE - ISA INDUSTRIAL
 # =====================================================
 
-st.markdown("""
+    st.markdown("""
 
-<style>
+    <style>
 
-.custom-kpi {
+    .custom-kpi {
 
-    background:
-        #252526;
+        background:
+            #252526;
 
-    border:
-        1px solid #3A3A3A;
+        border:
+            1px solid #3A3A3A;
 
-    border-radius:
-        12px;
+        border-radius:
+            12px;
 
-    padding:
-        24px;
+        padding:
+            24px;
 
-    min-height:
-        180px;
+        min-height:
+            180px;
 
-    box-shadow:
-        none;
+        box-shadow:
+            none;
 
-    position:
-        relative;
+        position:
+            relative;
 
-    overflow:
-        hidden;
+        overflow:
+            hidden;
 
-    transition:
-        all 0.2s ease;
-}
+        transition:
+            all 0.2s ease;
+    }
 
-/* REMOVE GLOW */
+    /* REMOVE GLOW */
 
-.custom-kpi::before {
+    .custom-kpi::before {
 
-    display:
-        none;
-}
+        display:
+            none;
+    }
 
-/* HOVER */
+    /* HOVER */
 
-.custom-kpi:hover {
+    .custom-kpi:hover {
 
-    background:
-        #2D2D30;
+        background:
+            #2D2D30;
 
-    border:
-        1px solid #5A5A5A;
+        border:
+            1px solid #5A5A5A;
 
-    transform:
-        translateY(-2px);
-}
+        transform:
+            translateY(-2px);
+    }
 
-/* KPI TITLE */
+    /* KPI TITLE */
 
-.custom-kpi h4 {
+    .custom-kpi h4 {
 
-    margin:
-        0;
+        margin:
+            0;
 
-    margin-bottom:
-        26px;
+        margin-bottom:
+            26px;
 
-    font-size:
-        13px;
+        font-size:
+            13px;
 
-    font-weight:
-        700;
+        font-weight:
+            700;
 
-    color:
-        #A0A0A0;
+        color:
+            #A0A0A0;
 
-    text-transform:
-        uppercase;
+        text-transform:
+            uppercase;
 
-    letter-spacing:
-        0.6px;
-}
+        letter-spacing:
+            0.6px;
+    }
 
-/* KPI VALUE */
+    /* KPI VALUE */
 
-.custom-kpi h1 {
+    .custom-kpi h1 {
 
-    margin:
-        0;
+        margin:
+            0;
 
-    margin-bottom:
-        18px;
+        margin-bottom:
+            18px;
 
-    font-size:
-        52px;
+        font-size:
+            52px;
 
-    font-weight:
-        800;
+        font-weight:
+            800;
 
-    color:
-        #F2F2F2;
+        color:
+            #F2F2F2;
 
-    line-height:
-        1;
+        line-height:
+            1;
 
-    text-shadow:
-        none;
-}
+        text-shadow:
+            none;
+    }
 
-/* KPI DESCRIPTION */
+    /* KPI DESCRIPTION */
 
-.custom-kpi p {
+    .custom-kpi p {
 
-    margin:
-        0;
+        margin:
+            0;
 
-    font-size:
-        13px;
+        font-size:
+            13px;
 
-    color:
-        #BFBFBF;
+        color:
+            #BFBFBF;
 
-    line-height:
-        1.5;
-}
+        line-height:
+            1.5;
+    }
 
-</style>
+    </style>
 
 """, unsafe_allow_html=True)
 
