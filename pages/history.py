@@ -16,7 +16,53 @@ def show_history():
 
     st.divider()
 
-    coletas = st.session_state.coletas
+    from db_connection import get_safe_connection
+
+conn = get_safe_connection()
+
+cursor = conn.cursor()
+
+cursor.execute("""
+
+SELECT
+
+    data_coleta,
+    hora_coleta,
+    ponto,
+    operador,
+    status,
+    resultados,
+    planta,
+    setor,
+    observacoes
+
+FROM collections
+
+ORDER BY data_coleta DESC,
+hora_coleta DESC
+
+""")
+
+rows = cursor.fetchall()
+
+cursor.close()
+
+coletas = []
+
+for row in rows:
+
+    coletas.append({
+
+        "data_coleta": str(row[0]),
+        "hora_coleta": str(row[1]),
+        "ponto": row[2],
+        "operador": row[3],
+        "status": row[4],
+        "resultados": row[5],
+        "planta": row[6],
+        "setor": row[7],
+        "observacoes": row[8]
+    })
 
     if not coletas:
 
