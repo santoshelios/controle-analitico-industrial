@@ -1,5 +1,25 @@
+
+# =========================================================
+# HISTORY PAGE
+# =========================================================
+
+def show_history():
+
+    st.title("📚 Histórico Analítico")
+
+    st.markdown("""
+    Central operacional de rastreabilidade e auditoria analítica.
+    """)
+
+    st.divider()
+
+from db_connection import get_safe_connection
+
 import streamlit as st
 import pandas as pd
+import json
+
+from db_connection import get_safe_connection
 
 
 # =========================================================
@@ -16,53 +36,59 @@ def show_history():
 
     st.divider()
 
-    from db_connection import get_safe_connection
+    # =====================================================
+    # POSTGRESQL
+    # =====================================================
 
-conn = get_safe_connection()
+    conn = get_safe_connection()
 
-cursor = conn.cursor()
+    cursor = conn.cursor()
 
-cursor.execute("""
+    cursor.execute("""
 
-SELECT
+    SELECT
 
-    data_coleta,
-    hora_coleta,
-    ponto,
-    operador,
-    status,
-    resultados,
-    planta,
-    setor,
-    observacoes
+        data_coleta,
+        hora_coleta,
+        ponto,
+        operador,
+        status,
+        resultados,
+        planta,
+        setor,
+        observacoes
 
-FROM collections
+    FROM collections
 
-ORDER BY data_coleta DESC,
-hora_coleta DESC
+    ORDER BY data_coleta DESC,
+    hora_coleta DESC
 
-""")
+    """)
 
-rows = cursor.fetchall()
+    rows = cursor.fetchall()
 
-cursor.close()
+    cursor.close()
 
-coletas = []
+    coletas = []
 
-for row in rows:
+    for row in rows:
 
-    coletas.append({
+        coletas.append({
 
-        "data_coleta": str(row[0]),
-        "hora_coleta": str(row[1]),
-        "ponto": row[2],
-        "operador": row[3],
-        "status": row[4],
-        "resultados": row[5],
-        "planta": row[6],
-        "setor": row[7],
-        "observacoes": row[8]
-    })
+            "data_coleta": str(row[0]),
+            "hora_coleta": str(row[1]),
+            "ponto": row[2],
+            "operador": row[3],
+            "status": row[4],
+            "resultados": row[5],
+            "planta": row[6],
+            "setor": row[7],
+            "observacoes": row[8]
+        })
+
+    # =====================================================
+    # SEM DADOS
+    # =====================================================
 
     if not coletas:
 
@@ -72,22 +98,48 @@ for row in rows:
 
         return
 
+    # =====================================================
+    # LINHAS
+    # =====================================================
+
     linhas = []
 
     for coleta in reversed(coletas):
 
         resultados = coleta["resultados"]
 
+        # =============================================
+        # JSONB
+        # =============================================
+
+        if isinstance(resultados, str):
+
+            resultados = json.loads(
+                resultados
+            )
+
         for parametro, info in resultados.items():
 
-            status_visual = (
-
-                "🟡 Alerta"
-
-                if info["status"] == "Alerta"
-
-                else "🟢 Conforme"
+            status = info.get(
+                "status",
+                "Conforme"
             )
+
+            # =========================================
+            # STATUS VISUAL
+            # =========================================
+
+            if status == "Crítico":
+
+                status_visual = "🔴 Crítico"
+
+            elif status == "Preditivo":
+
+                status_visual = "🟡 Preditivo"
+
+            else:
+
+                status_visual = "🟢 Conforme"
 
             linhas.append({
 
@@ -99,20 +151,32 @@ for row in rows:
 
                 "Parâmetro": parametro,
 
-                "Resultado": info["valor"],
+                "Resultado": info.get(
+                    "valor",
+                    "-"
+                ),
 
-                "Limites": f"{info['limite_min']} / {info['limite_max']}",
-
-                "Desvio": info["desvio"],
+                "Desvio": info.get(
+                    "desvio",
+                    "-"
+                ),
 
                 "Operador": coleta["operador"],
 
                 "Status": status_visual
             })
 
+    # =====================================================
+    # DATAFRAME
+    # =====================================================
+
     df = pd.DataFrame(linhas)
 
     st.subheader("📋 Rastreabilidade Operacional")
+
+    # =====================================================
+    # TABLE ISA
+    # =====================================================
 
     html_table = """
 
@@ -124,9 +188,9 @@ for row in rows:
 
     border-collapse: collapse;
 
-    background-color: #0F172A;
+    background-color: #252526;
 
-    color: white;
+    color: #D9D9D9;
 
     font-size: 13px;
 
@@ -137,7 +201,7 @@ for row in rows:
 
 .history-table thead {
 
-    background-color: #1E293B;
+    background-color: #2D2D30;
 }
 
 .history-table th {
@@ -146,21 +210,21 @@ for row in rows:
 
     text-align: left;
 
-    font-weight: 600;
+    font-weight: 700;
 
-    color: #E2E8F0;
+    color: #F2F2F2;
 }
 
 .history-table td {
 
     padding: 10px;
 
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid #3A3A3A;
 }
 
 .history-table tbody tr:hover {
 
-    background-color: rgba(255,255,255,0.03);
+    background-color: #2D2D30;
 }
 
 </style>
@@ -170,6 +234,7 @@ for row in rows:
 <thead>
 
 <tr>
+
 """
 
     for coluna in df.columns:
