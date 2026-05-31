@@ -26,7 +26,7 @@ usuarios_mock = [
         "usuario": "operador",
         "senha": "123",
         "nome": "Operador Industrial",
-        "role": "user"
+        "role": "operador"
     }
 ]
 
